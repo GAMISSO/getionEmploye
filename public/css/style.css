@@ -1,0 +1,47 @@
+ body {
+      background-color: #f9fafb;
+    }
+    .navbar {
+      background-color: #007bff;
+    }
+    .navbar-brand, .nav-link, .navbar-text {
+      color: #fff !important;
+    }
+    .table th {
+      background-color: #f3f4f6;
+    }
+    .badge-epargne {
+      background-color: #0d6efd;
+    }
+    .badge-cheque {
+      background-color: #6c757d;
+    }
+    .status-actif {
+      background-color: #28a745;
+    }
+    .status-bloque {
+      background-color: #dc3545;
+    }
+    .btn-action {
+      border: none;
+      border-radius: 5px;
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .btn-view {
+      background-color: #007bff;
+    }
+    .btn-edit {
+      background-color: #ffc107;
+      color: #000;
+    }
+    .btn-delete {
+      background-color: #dc3545;
+    }
+    .btn-action:hover {
+      opacity: 0.8;
+    }
