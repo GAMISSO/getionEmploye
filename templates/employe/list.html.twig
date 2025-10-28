@@ -14,11 +14,14 @@
         <input type="text" class="form-control" placeholder="Rechercher sur numéro...">
       </div>
       <div class="col-md-3">
-            <select class="form-select">
-                <option selected>Départements</option>
-                {% for depart in departement %}
-            <option value="{{ depart.id }}">{{ depart.name }}</option>
-        {% endfor %}
+            <select class="form-select" onchange="if (this.value) window.location.href = this.value;">
+                <option value="">{{ 'Départements' }}</option>
+                {% for depart in departements %}
+                    <option value="{{ path('app_employe_list_by_dept', {'idDept': depart.id}) }}"
+                        {% if depart.id == app.request.get('idDept') %}selected{% endif %}>
+                        {{ depart.name }}
+                    </option>
+                {% endfor %}
             </select>
         </div>
         <div class="col-md-3">
@@ -37,6 +40,7 @@
             <th>ID</th>
             <th>nom-prenom</th>
             <th>Telephone</th>
+            <th>Dat de création</th>
             <th>Dat d'embauche</th>
             <th>Departement</th>
             <th>Statut</th>
@@ -53,11 +57,13 @@
                 <td>{{item.updateAt|date("d/m/Y")}}</td>
                 <td>{{item.departement.name}}</td>
                 <td>
+                  <span class="badge {% if item.isArchived %}bg-success{% else %}bg-danger{% endif %}">
                     {% if item.isArchived %}
-                        <span class="badge bg-success">Activé</span>
+                        Archivé
                     {% else %}
-                        <span class="badge bg-danger">Bloqué</span>
+                        Actif
                     {% endif %}
+                  </span>
                 </td>
                 <td>
                 <a href="#" class="btn btn-sm btn-primary"><i class="bi bi-eye"></i>Details</a>
@@ -73,15 +79,7 @@
     </div>
 
     <!-- Pagination -->
-    <nav>
-      <ul class="pagination justify-content-center">
-        <li class="page-item disabled"><a class="page-link">Précédent</a></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Suivant</a></li>
-      </ul>
-    </nav>
+    {% include "components/pagination.html.twig" with {nbrePage:nbrePage,pageEncours:pageEncours,pathName:'app_employe_list'} %}
   </div>
 {% endblock %}
 

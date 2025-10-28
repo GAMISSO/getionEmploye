@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class DepartementController extends AbstractController implements DepartementControllerInterface
 {
+    private const LIMIT=4;
 
     public function __construct( private readonly  DepartementRepository $departementRepository){
 
@@ -18,9 +19,15 @@ final class DepartementController extends AbstractController implements Departem
     #[Route('/departement/list', name: 'app_departement_list', methods: ['GET','POST'])]
     public function list(Request $request): Response
     {
-        $departements= $this->departementRepository->findAll();
+        $page=$request->query->get("page",1);
+        $offset=($page-1)*self::LIMIT;
+        $departements= $this->departementRepository->findBy([],null,self::LIMIT,$offset);
+        $count=$this->departementRepository->count([]);
+        $nbrePage=ceil($count/self::LIMIT);
         return $this->render('departement/list.html.twig', [
-            'datas' => $departements
+            'datas' => $departements,
+            "nbrePage"=>$nbrePage,
+            "pageEncours"=>$page
         ]);
     }
 }
