@@ -1,88 +1,29 @@
 {% extends 'base.html.twig' %}
+    {% block custumStylesheets %}
+            #employe_isArchived{
+                display:flex;
+                gap:1.5rem;
+            }
+    {% endblock %}
+
     {% block body %}
         <div class="container my-5">
-        <div class="card shadow-sm">
-            <div class="card-body">
-            <h3 class="fw-semibold mb-4">{{ titre|default('Ajouter / Éditer un employé') }}</h3>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {{ form_start(formEmp) }}
+                    <h3 class="fw-semibold mb-4">{{ titre|default('Ajouter / Éditer un employé') }}</h3>
 
-            {# Affichage des erreurs globaux (si le contrôleur passe 'errors' ou des flashs) #}
-            {% if errors is defined and errors %}
-                <div class="alert alert-danger">
-                <ul class="mb-0">
-                    {% for err in errors %}<li>{{ err }}</li>{% endfor %}
-                </ul>
-                </div>
-            {% endif %}
+                    {# Affichage des erreurs globaux (si le contrôleur passe 'errors' ou des flashs) #}
+                    {% if errors is defined and errors %}
+                        <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            {% for err in errors %}<li>{{ err }}</li>{% endfor %}
+                        </ul>
+                        </div>
+                    {% endif %}
 
-            <form action="{{ path('app_employe_add') }}" method="post" novalidate>
-                <input type="hidden" name="_token" value="{{ csrf_token('employe_form') }}">
-
-                {# id caché pour l'édition #}
-                {% if employe is defined and employe.id is defined %}
-                <input type="hidden" name="id" value="{{ employe.id }}">
-                {% endif %}
-
-                <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">Nom complet</label>
-                    <input name="nomComplet" type="text" class="form-control" required
-                        value="{{ employe.nomComplet|default('') }}" maxlength="255" />
+                    {{ form_end(formEmp) }}
                 </div>
-
-                <div class="col-md-6">
-                    <label class="form-label">Téléphone</label>
-                    <input name="telephone" type="tel" class="form-control" required
-                        pattern="^0[67][0-9]{8}$"
-                        placeholder="06xxxxxxxx"
-                        value="{{ employe.telephone|default('') }}" />
-                    <div class="form-text">Format attendu : 06xxxxxxxx ou 07xxxxxxxx</div>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Date d'embauche</label>
-                    <input name="dateEmbauche" type="date" class="form-control"
-                        value="{{ employe.dateEmbauche is defined and employe.dateEmbauche ? employe.dateEmbauche|date('Y-m-d') : '' }}">
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Département</label>
-                    <select name="departement" class="form-select" required>
-                    <option value="">Sélectionner</option>
-                    {% for dept in departements %}
-                        <option value="{{ dept.id }}"
-                        {% if employe is defined and employe.departement is defined and employe.departement.id == dept.id %}selected{% endif %}>
-                        {{ dept.name }}
-                        </option>
-                    {% endfor %}
-                    </select>
-                </div>
-
-                <div class="col-md-4">
-                    <label class="form-label">Statut</label>
-                    <select name="isActive" class="form-select">
-                    <option value="1" {% if employe is defined and employe.isActive %}selected{% endif %}>Activé</option>
-                    <option value="0" {% if employe is defined and not employe.isActive %}selected{% endif %}>Bloqué</option>
-                    </select>
-                </div>
-
-                <div class="col-12">
-                    <label class="form-label">Remarques (optionnel)</label>
-                    <textarea name="notes" class="form-control" rows="3">{{ employe.notes|default('') }}</textarea>
-                </div>
-                </div>
-
-                <div class="mt-4 d-flex justify-content-between">
-                <div>
-                    <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Enregistrer
-                    </button>
-                    <a href="{{ path('app_employe_list') }}" class="btn btn-secondary ms-2">
-                    Annuler
-                    </a>
-                </div>
-                </div>
-            </form>
             </div>
-        </div>
         </div>
 {% endblock %}

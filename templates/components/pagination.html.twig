@@ -2,13 +2,13 @@
         <!-- Pagination -->
         <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item {{pageEncours<=1 ? 'disabled'}}  "><a class="page-link" href="{{ path(pathName,{page:pageEncours-1}) }}" tabindex="-1" aria-disabled="true">Précédent</a></li>
+            <li class="page-item {{pageEncours<=1 ? 'disabled'}}  "><a class="page-link" href="{{ path(pathName,app.request.query.all|merge({page:pageEncours-1})) }}" tabindex="-1" aria-disabled="true">Précédent</a></li>
             {% for i in 1..nbrePage %}
                 <li class="page-item {% if i==app.request.get('page',1) %}active{% endif %}">
-                    <a class="page-link" href="{{ path(pathName,{'page':i}) }}">{{ i }}</a>
+                    <a class="page-link" href="{{ path(pathName,app.request.query.all|merge({page:i})) }}">{{ i }}</a>
                 </li>
             {% endfor %}
-            <li class="page-item"  {{1<=pageEncours ? 'disabled'}}><a class="page-link" href="{{ path(pathName,{page:pageEncours+1}) }}">Suivant</a></li>
+            <li class="page-item"  {{1<=pageEncours ? 'disabled'}}><a class="page-link" href="{{ path(pathName,app.request.query.all|merge({page:pageEncours+1})) }}">Suivant</a></li>
         </ul>
         </nav>
     {% endif %}

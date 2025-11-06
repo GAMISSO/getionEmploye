@@ -5,42 +5,44 @@
   <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h3 class="fw-semibold">{{ titre }}</h3>
-      <a href="{{path('app_employe_add')}}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouveau employe</a>
+      {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{path('app_employe_add')}}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouveau employe</a>
+      {% endif %}
     </div>
 
     <!-- Barre de recherche -->
-    <div class="row mb-3">
-      <div class="col-md-5">
-        <input type="text" class="form-control" placeholder="Rechercher sur numéro...">
-      </div>
-      <div class="col-md-3">
-            <select class="form-select" onchange="if (this.value) window.location.href = this.value;">
-                <option value="">{{ 'Départements' }}</option>
-                {% for depart in departements %}
-                    <option value="{{ path('app_employe_list_by_dept', {'idDept': depart.id}) }}"
-                        {% if depart.id == app.request.get('idDept') %}selected{% endif %}>
-                        {{ depart.name }}
-                    </option>
-                {% endfor %}
-            </select>
+    <div class="card-body">
+      {{ form_start(formSearch) }}
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="input-group">
+                  {{ form_widget(formSearch.numero)}}
+            </div>
+          </div>
+          <div class="col-md-3">
+                {{form_widget(formSearch.departement)}}
+          </div>
+            <div class="col-md-3">
+                {{ form_widget(formSearch.isArchived)}}
+            </div>
+            <div class="col-md-3">
+                {{ form_widget(formSearch.btnSaveEmp)}}
+            </div>
         </div>
-        <div class="col-md-3">
-            <select class="form-select">
-                <option selected>status</option>
-                <option></option>
-            </select>
-        </div>
+      {{ form_end(formSearch) }}
     </div>
+    
 
     <!-- Tableau -->
     <div class="table-responsive">
+      {% include 'components/messageFlash.html.twig' %}
       <table class="table table-hover align-middle">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>photo</th>
+            <th>Numero</th>
             <th>nom-prenom</th>
             <th>Telephone</th>
-            <th>Dat de création</th>
             <th>Dat d'embauche</th>
             <th>Departement</th>
             <th>Statut</th>
@@ -50,20 +52,16 @@
         <tbody>
             {% for item in employes %}
             <tr>
-                <td>{{item.id}}</td>
+                <td>
+                  <img src="{{ item.photo }}" alt="Photo de {{ item.nomComplet }}" width="50" height="50" class="rounded-circle">
+                </td>
+                <td>{{item.numero}}</td>
                 <td>{{item.nomComplet}}</td>
                 <td>{{item.telephone}}</td>
-                <td>{{item.createAt|date("d/m/Y")}}</td>
-                <td>{{item.updateAt|date("d/m/Y")}}</td>
-                <td>{{item.departement.name}}</td>
+                <td>{{item.embaucheAt|date("d/m/Y")}}</td>
+                <td>{{item.departementName}}</td>
                 <td>
-                  <span class="badge {% if item.isArchived %}bg-success{% else %}bg-danger{% endif %}">
-                    {% if item.isArchived %}
-                        Archivé
-                    {% else %}
-                        Actif
-                    {% endif %}
-                  </span>
+                  {% include "components/statut.html.twig" with {active:item.isArchived,color:'info'} %}
                 </td>
                 <td>
                 <a href="#" class="btn btn-sm btn-primary"><i class="bi bi-eye"></i>Details</a>

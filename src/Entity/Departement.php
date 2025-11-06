@@ -6,9 +6,12 @@ use App\Repository\DepartementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: DepartementRepository::class)]
 #[ORM\Table(name: 'departements')]
+#[UniqueEntity(fields: ['name'], message: 'la {{ valeur }} existe déjà.')]
 class Departement
 {
     #[ORM\Id]
@@ -16,6 +19,13 @@ class Departement
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: "Le nom du département ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 2,
+        max: 100,
+        minMessage: 'Le nom du département doit comporter au moins {{ limit }} caractères.',
+        maxMessage: 'Le nom du département ne peut pas dépasser {{ limit }} caractères.'
+    )]
     #[ORM\Column(length: 100,unique: true)]
     private ?string $name = null;
 
@@ -36,6 +46,7 @@ class Departement
 
     public function __construct()
     {
+        $this->createAt = new \DateTimeImmutable();
         $this->employes = new ArrayCollection();
     }
 
@@ -121,4 +132,10 @@ class Departement
 
         return $this;
     }
+
+    public function getNbreEmploye(): int
+    {
+        return count($this->employes);
+    }
+
 }
